@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+{% include 'base/header.html' %}
+
+<body data-type="widgets">
+   {% include 'base/body.html' %}
+    {% include 'base/menu.html' %}
+
+   <div class="tpl-content-wrapper">
+       <div class="widget am-fr">
+            <div class="widget-head am-cf">
+                <ol class="am-breadcrumb">
+                  <li><a href="{% url 'index' %}" class="am-icon-home">首页</a></li>
+                  <li><a href="{% url 'idcs' %}">查看IDC</a></li>
+                  <li class="am-active">编辑IDC</li>
+                </ol>
+            </div>
+            <div class="widget-body am-fr">
+                <form class="am-form tpl-form-border-form tpl-form-border-br" method="post" action="{% url 'idcedit' %}{{ idc_id }}">
+                    {% csrf_token %}
+                    <div class="widget-head am-fl">编辑基本信息</div>
+                    <fieldset>
+                        <div class="am-form-group am-u-md-12">
+                            {{ idcform.as_p }}
+                        </div>
+                    </fieldset>
+                    <div class="am-form-group am-pagination-centered">
+                        {% for message in status %}
+                            <span style="color: #00a23f">{{ message.message }}</span>
+                        {% endfor %}
+                    </div>
+                    <div class="am-form-group am-pagination-centered">
+                        <a href="{% url 'idcs' %}" id="cancle_button" role="button" class="am-btn am-btn-secondary">取消</a>
+                        <button id="submit_button" type="submit" class="am-btn am-btn-success">保存</button>
+                    </div>
+                </form>
+            </div>
+       </div>
+   </div>
+   {% include 'base/footer.html' %}
+</body>
+</html>

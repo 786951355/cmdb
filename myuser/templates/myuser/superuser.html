@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+{% include 'base/header.html' %}
+
+<body data-type="widgets">
+
+    {% include 'base/body.html' %}
+    {% include 'base/menu.html' %}
+    {% include 'base/footer.html' %}
+
+    <script>
+        /*
+        当前表格内搜索
+        $('#groupsearch').click(function () {
+            var text = $('#searchresult').val();
+            console.log('hello')
+            $("table tr:not('#thead')").hide().filter(':contains("'+ text +'")').show();
+        })
+
+        if($(".gradeX").is(":checked")){//选中
+            alert($(".gradeX").val());//打印选中的值
+        }
+        */
+        $('#delbtn').click(function () {
+            var check_array = [];
+            if(confirm('确定删除')){
+                $('.gradeX input:checked').each(function () {
+                    check_array.push($(this).attr("value"));
+                });
+                $.get("{% url 'userdel' %}", {id: check_array.join(',')},
+                function (result) {
+                    alert(result);
+                    $('.gradeX input:checked').closest("tr").remove();
+                })
+            }
+        });
+        //行内删除
+        $('.tpl-table-black-operation-del').click(function() {
+            var row = $(this).closest("tr");
+            if(confirm('确定删除')){
+                var value = $(this).attr("value");
+                $.get(value, {},
+                function (result) {
+                    row.remove();
+                    alert(result);
+                })
+            }
+        })
+    </script>
+</body>
+</html>

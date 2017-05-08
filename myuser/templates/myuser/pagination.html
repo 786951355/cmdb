@@ -1,0 +1,80 @@
+
+<div id="pagenavi" class="">
+{# # 判断是否还有上一页，有的话要显示一个上一页按钮#}
+    <ul data-am-widget="pagination" class="am-pagination am-pagination-default">
+
+        {% if obj_list.has_previous %}
+        <li class="am-pagination-prev">
+            <a class="previous-page" href="?page={{ obj_list.previous_page_number }}">上一页</a>
+        </li>
+    {% endif %}
+
+{#    # 页码号为1永远显示#}
+{# 当前页就是第一页#}
+        {% if first_page == current_page %}
+            <li class="am-active">
+                <a class="am-active">1</a>
+            </li>
+
+        {% else %}
+    {#         # 否则的话，第一页是可以点击的，点击后通过?page=1的形式把页码号传递给视图函数#}
+            <li>
+                <a href="?page=1" class="am-pagination-first">1</a>
+            </li>
+
+        {% endif %}
+
+{#    # 2以前的页码号要被显示成省略号了#}
+    {% if pages_first > 2 %}
+        <li>
+            <a>...</a>
+        </li>
+
+    {% endif %}
+
+{#    # 通过for循环把pages中的值显示出来#}
+    {% for page in pages %}
+{#        # 是否当前页，按钮会显示不同的样式#}
+        {% if page == current_page %}
+            <li class="am-active">
+              <a href="#" class="am-active">{{ page }}</a>
+            </li>
+        {% else %}
+            <li>
+                <a href="?page={{ page }}" class="">{{ page }}</a>
+            </li>
+
+        {% endif %}
+    {% endfor %}
+
+{#      # pages最后一个值+1的值小于最大页码号，说明有页码号需要被省略号替换#}
+    {% if pages_last < last_page %}
+        <li class="">
+            <a>...</a>
+        </li>
+
+    {% endif %}
+
+{#      # 永远显示最后一页的页码号，如果只有一页则前面已经显示了1就不用再显示了#}
+    {% if last_page != 1 %}
+        {% if last_page == current_page %}
+            <li class="am-active">
+                <a href="#" class="am-active">{{ last_page }}</a>
+            </li>
+
+        {% else %}
+            <li>
+                <a href="?page={{ last_page }}">{{ last_page }}</a>
+            </li>
+
+        {% endif %}
+    {% endif %}
+
+{#    # 还有下一页，则显示一个下一页按钮#}
+    {% if obj_list.has_next %}
+        <li class="am-pagination-next">
+            <a  href="?page={{ obj_list.next_page_number }}">下一页<span class=""></span></a>
+        </li>
+    {% endif %}
+</ul>
+</div>

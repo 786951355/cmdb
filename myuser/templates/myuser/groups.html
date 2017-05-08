@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+{#{% load paginate_tags %}#}
+{#{% paginate all_groups 2 %}#}
+{% load el_pagination_tags %}
+{% paginate all_groups %}
+{% include 'base/header.html' %}
+
+<body data-type="widgets">
+
+   {% include 'base/body.html' %}
+    {% include 'base/menu.html' %}
+
+    <!-- 内容区域 -->
+    <div class="tpl-content-wrapper">
+        <div class="row-content am-cf">
+            <div class="row">
+                <div class="am-u-sm-12 am-u-md-12 am-u-lg-12">
+                    <div class="widget am-cf">
+                        <div class="widget-head am-cf">
+                            <div class="widget-title  am-cf">用户组列表</div>
+                        </div>
+                        <div class="widget-body  am-fr">
+                            <div class="am-u-sm-12 am-u-md-6 am-u-lg-6">
+                                <div class="am-form-group">
+                                    <div class="am-btn-toolbar">
+                                        <div class="am-btn-group am-btn-group-xs">
+                                            <a href="{% url 'groupadd' %}" role="button" class="am-btn am-btn-default am-btn-success"><span class="am-icon-plus"></span> 添加用户组</a>
+                                            <a id="delbtn" role="button" class="am-btn am-btn-default am-btn-danger"><span class="am-icon-trash-o"></span> 删除所选</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="am-u-sm-12 am-u-md-12 am-u-lg-3">
+                                <div class="am-input-group am-input-group-sm tpl-form-border-form cl-p">
+                                    <input id="searchresult" type="text" class="am-form-field "/>
+                                    <span class="am-input-group-btn">
+                                        <button id="groupsearch" class="am-btn  am-btn-default am-btn-success tpl-table-list-field am-icon-search" type="button"></button>
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="am-u-sm-12">
+                                <table width="100%" class="am-table am-table-compact am-table-bordered am-table-radius am-table-striped tpl-table-black " id="example-r">
+                                    <thead>
+                                        <tr id="thead">
+                                            <th>选择</th>
+                                            <th>组名</th>
+                                            <th>成员数目</th>
+                                            <th>操作</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for group in all_groups %}
+                                        <tr class="gradeX">
+                                            <td><input class="am-form-group" type="checkbox" value="{{ group.id }}"></td>
+                                            <td>{{ group.name }}</td>
+                                            <td>{{ group.user_set.all.count }}</td>
+                                            <td>
+                                                <div class="tpl-table-black-operation">
+                                                    <a href="{% url 'groupedit' %}{{ group.id }}">
+                                                        <i class="am-icon-pencil"></i> 编辑
+                                                    </a>
+                                                    <a target="#my-prompt" id="rowdel" href="" value="{% url 'groupdel' %}?id={{ group.id }}" class="tpl-table-black-operation-del">
+                                                        <i class="am-icon-trash"></i> 删除
+                                                    </a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="am-u-lg-12 am-cf">
+                                {% show_pages %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% include 'base/footer.html' %}
+    <script>
+        $('#delbtn').click(function () {
+            var check_array = [];
+            if(confirm('确定删除')){
+                $('.gradeX input:checked').each(function () {
+                    check_array.push($(this).attr("value"));
+                });
+                $.get("{% url 'groupdel' %}", {id: check_array.join(',')},
+                function (result) {
+                    if(result == '删除成功'){
+                        alert(result);
+                        $('.gradeX input:checked').closest("tr").remove();
+                    }else {
+                        alert('你没有权限操作');
+                    }
+                })
+            }
+        });
+
+        //行内删除
+        $('.tpl-table-black-operation-del').click(function() {
+            var row = $(this).closest("tr");
+            if(confirm('确定删除')){
+                var value = $(this).attr("value");
+                $.get(value, {},
+                function (result) {
+                    if(result == '删除成功'){
+                        alert(result);
+                        row.remove();
+                    }else{
+                        alert('你没有权限删除用户组!');
+                    }
+                })
+            }
+        })
+    </script>
+</body>
+</html>

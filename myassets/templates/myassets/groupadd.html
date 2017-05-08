@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+<head>
+   {% include 'base/header.html' %}
+    <link rel="stylesheet" type="text/css" href="{% static 'assets/css/multi-select.css' %}">
+</head>
+<body data-type="widgets">
+
+   {% include 'base/body.html' %}
+   {% include 'base/menu.html' %}
+
+    <div class="tpl-content-wrapper">
+        <div class="widget am-fr">
+            <div class="widget-head am-cf">
+                <ol class="am-breadcrumb">
+                  <li><a href="{% url 'index' %}" class="am-icon-home">首页</a></li>
+                  <li><a href="{% url 'groups' %}">查看资产组</a></li>
+                  <li class="am-active">添加资产组</li>
+                </ol>
+            </div>
+            <div class="widget-body  am-fr">
+                <form class="am-form tpl-form-border-form tpl-form-border-br" method="post" action="{% url 'assetgroupadd' %}">
+                    {% csrf_token %}
+                    <div class="widget-head am-fl">填写基本信息</div>
+                    <div id="hint" class="am-form-group"></div>
+                    <fieldset>
+                        {% for field in groupform %}
+                            <div class="am-form-group am-u-md-1">
+                                {{ field.label_tag }}
+                            </div>
+                            <div class="am-form-group am-u-md-11">
+                                {{ field }}
+                            </div>
+                        {% endfor %}
+                    </fieldset>
+                    <div class="am-form-group am-u-md-12">
+                        <select multiple="" class="searchable" name="searchable[]" id="11multiselect" >
+                            {% for asset in all_assets %}
+                              <option id="{{ forloop.counter }}">{{ asset.hostname }}--{{ asset.ip }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="am-form-group am-u-md-12 am-pagination-centered">
+                        {% for message in status %}
+                            <span style="color: #00a23f">{{ message.message }}</span>
+                        {% endfor %}
+                    </div>
+                    <div class="am-form-group am-u-md-12 am-pagination-centered">
+                        <a href="{% url 'assetgroups' %}" id="cancle_button" role="button" class="am-btn am-btn-secondary">取消</a>
+                        <button type="submit" class="am-btn am-btn-success">提交</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    {% include 'base/footer.html' %}
+
+{#   <script>#}
+{#       $(function () {#}
+{#           $('#id_name').blur(function () {#}
+{#               var group_name = $(this).val();#}
+{#               $.get('/assetsgroup/search',{name: group_name},#}
+{#                   function(result){#}
+{#                       if(result == 'unuse'){#}
+{#                           $('#hint').html('')#}
+{#                       }else {#}
+{#                            $('#hint').html('<font color="red">您输入的名字已存在！请重新输入！</font>')#}
+{#                       }#}
+{#                   })#}
+{#       })})#}
+{#   </script>#}
+
+    <script src="{% static 'assets/js/jquery.multi-select.js' %}"></script>
+    <script src="{% static 'assets/js/jquery.quicksearch.js' %}"></script>
+
+   <script>
+         $('.searchable').multiSelect({
+          selectableHeader: "<input type='text' class='search-input' autocomplete='off' placeholder='输入关键字过滤'>",
+          selectionHeader: "<input type='text' class='search-input' autocomplete='off' placeholder='输入关键字过滤'>",
+          afterInit: function(ms){
+            var that = this,
+                $selectableSearch = that.$selectableUl.prev(),
+                $selectionSearch = that.$selectionUl.prev(),
+                selectableSearchString = '#'+that.$container.attr('id')+' .ms-elem-selectable:not(.ms-selected)',
+                selectionSearchString = '#'+that.$container.attr('id')+' .ms-elem-selection.ms-selected';
+
+            that.qs1 = $selectableSearch.quicksearch(selectableSearchString)
+            .on('keydown', function(e){
+              if (e.which === 40){
+                that.$selectableUl.focus();
+                return false;
+              }
+            });
+
+            that.qs2 = $selectionSearch.quicksearch(selectionSearchString)
+            .on('keydown', function(e){
+              if (e.which == 40){
+                that.$selectionUl.focus();
+                return false;
+              }
+            });
+          },
+          afterSelect: function(){
+            this.qs1.cache();
+            this.qs2.cache();
+          },
+          afterDeselect: function(){
+            this.qs1.cache();
+            this.qs2.cache();
+          }
+        });
+   </script>
+</body>
+</html>

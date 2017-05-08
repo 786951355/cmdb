@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+{% load el_pagination_tags %}
+{% paginate all_assets %}
+{% include 'base/header.html' %}
+
+<body data-type="widgets">
+    {% include 'base/body.html' %}
+    {% include 'base/menu.html' %}
+    <div class="tpl-content-wrapper">
+        <div class="row-content am-cf">
+            <div class="row">
+                <div class="am-u-sm-12 am-u-md-12 am-u-lg-12">
+                     <div class="widget am-cf">
+                        <div class="widget-head am-cf">
+                            <div class="widget-title  am-cf">资产列表</div>
+                        </div>
+                        <div class="widget-body  am-fr">
+                            <div class="am-u-sm-12 am-u-md-6 am-u-lg-6">
+                                <div class="am-form-group">
+                                    <div class="am-btn-toolbar">
+                                        <div class="am-btn-group am-btn-group-xs">
+                                            <a href="{% url 'assetsadd' %}" role="button" class="am-btn am-btn-default am-btn-success"><span class="am-icon-plus"></span> 添加资产</a>
+                                            <a href="{% url 'bulkadd' %}" role="button" class="am-btn am-btn-default am-btn-secondary"><span class="am-icon-plus"></span> 批量添加</a>
+                                            <a id="delbtn" role="button" class="am-btn am-btn-default am-btn-danger"><span class="am-icon-trash-o"></span> 删除所选</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="am-u-sm-12 am-u-md-12 am-u-lg-3">
+                                <div class="am-input-group am-input-group-sm tpl-form-border-form cl-p">
+                                    <input id="searchresult" type="text" class="am-form-field ">
+                                    <span class="am-input-group-btn">
+                                        <button id="groupsearch" class="am-btn  am-btn-default am-btn-success tpl-table-list-field am-icon-search" type="button">搜索</button>
+                                        <button id="export" class="am-btn  am-btn-default am-btn-secondary tpl-table-list-field am-icon-expand" type="button">导出</button>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="am-u-sm-12">
+                                <table width="100%" class="am-table am-table-compact am-table-bordered am-table-radius am-table-striped tpl-table-black " id="example-r">
+                                    <thead>
+                                        <tr id="thead">
+                                            <th>选择</th>
+                                            <th>主机名</th>
+                                            <th>IP地址</th>
+                                            <th>IDC</th>
+                                            <th>所属主机组</th>
+                                            <th>操作系统</th>
+                                            <th>CPU核数</th>
+                                            <th>内存</th>
+                                            <th>硬盘容量</th>
+                                            <th>操作</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for asset in all_assets %}
+                                        <tr class="gradeX">
+                                            <td><input class="am-form-group" type="checkbox" value="{{ asset.id }}"></td>
+                                            <td>{{ asset.hostname }}</td>
+                                            <td>{{ asset.ip }}</td>
+                                            <td>{{ asset.idc}}</td>
+                                            <td>{{ asset.group.all |join:' ' }}</td>
+                                            <td>{{ asset.system_arch }}</td>
+                                            <td>{{ asset.cpu|default_if_none:"" }}</td>
+                                            <td>{{ asset.memory }}</td>
+                                            <td>{{ asset.disk }}</td>
+                                            <td>
+                                                <div class="tpl-table-black-operation">
+                                                    <a href="{% url 'assetsedit' %}{{ asset.id }}">
+                                                        <i class="am-icon-pencil"></i> 编辑
+                                                    </a>
+                                                    <a href="" value="{% url 'assetsdel' %}?id={{ asset.id }}" class="tpl-table-black-operation-del">
+                                                        <i class="am-icon-trash"></i> 删除
+                                                    </a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="am-u-lg-12 am-cf">
+                                {% show_pages %}
+                            </div>
+                        </div>
+                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% include 'base/footer.html' %}
+    <script>
+        /*
+        当前表格内搜索
+        $('#groupsearch').click(function () {
+            var text = $('#searchresult').val();
+            console.log('hello')
+            $("table tr:not('#thead')").hide().filter(':contains("'+ text +'")').show();
+        })
+
+        if($(".gradeX").is(":checked")){//选中
+            alert($(".gradeX").val());//打印选中的值
+        }
+    */
+        $('#delbtn').click(function () {
+            var check_array = [];
+            if(confirm('确定删除')){
+                $('.gradeX input:checked').each(function () {
+                    check_array.push($(this).attr("value"));
+                });
+                $.get("{% url 'assetsdel' %}", {id: check_array.join(',')},
+                function (result) {
+                    if(result == '删除成功'){
+                        alert(result);
+                        $('.gradeX input:checked').closest("tr").remove();
+                    }else {
+                        alert('你没有权限操作');
+                    }
+                })
+            }
+        });
+        //行内删除
+        $('.tpl-table-black-operation-del').click(function() {
+            var row = $(this).closest("tr");
+            if(confirm('确定删除')){
+                var url = $(this).attr("value");
+                $.get(url, {},
+                function (result) {
+                    if(result == '删除成功'){
+                        alert(result);
+                        row.remove();
+                    }else{
+                        alert('你没有权限删除用户!');
+                    }
+                })
+            }
+        })
+        // 导出
+        $('#export').click(function () {
+            if(confirm('确定导出')){
+                var url = "{% url 'exportasset' %}";
+                $.get(url, {},
+                function (result) {
+                    if(result != ''){
+                        data = eval(result);
+                        if(data.status == 'success'){
+                            var newTab=window.open('');
+                            var filepath = data.path;
+                            newTab.location.href = filepath;
+                        }else {
+                            alert('导出失败!')
+                        }
+                    }
+                })
+            }
+        })
+    </script>
+</body>
+</html>

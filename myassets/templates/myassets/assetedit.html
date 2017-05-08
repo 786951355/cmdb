@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+{% include 'base/header.html' %}
+
+<body data-type="widgets">
+   {% include 'base/body.html' %}
+    {% include 'base/menu.html' %}
+   <div class="tpl-content-wrapper">
+       <div class="widget am-fr">
+            <div class="widget-head am-cf">
+                <ol class="am-breadcrumb">
+                  <li><a href="{% url 'index' %}" class="am-icon-home">首页</a></li>
+                  <li><a href="{% url 'assets' %}">查看资产</a></li>
+                  <li class="am-active">编辑资产</li>
+                </ol>
+            </div>
+            <div class="widget-body am-fr">
+                <form class="am-form tpl-form-border-form tpl-form-border-br" method="post" action="{% url 'assetsedit' %}{{ asset_id }}">
+                    {% csrf_token %}
+                    <div class="widget-head am-fl">编辑基本信息</div>
+                    <fieldset>
+                        <div class="am-form-group am-u-md-12">
+                            {{ assetform.as_p }}
+                        </div>
+                        <div class="am-form-group am-u-md-12">
+                            {% for user in all_user %}
+                                {% if user in selected_user %}
+                                    <label class="am-checkbox">
+                                        <input name="selected_user_id" type="checkbox" checked="checked" value="{{ user.id }}">{{ user }}
+                                    </label>
+                                    {% else %}
+                                    <label class="am-checkbox">
+                                        <input name="selected_user_id" type="checkbox" value="{{ user.id }}">{{ user }}
+                                    </label>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    </fieldset>
+                    <div class="am-form-group am-pagination-centered">
+                        {% for message in status %}
+                            <span style="color: #00a23f">{{ message.message }}</span>
+                        {% endfor %}
+                    </div>
+                    <div class="am-form-group am-pagination-centered">
+                        <a href="{% url 'assets' %}" id="cancle_button" role="button" class="am-btn am-btn-secondary">取消</a>
+                        <button id="submit_button" type="submit" class="am-btn am-btn-success">保存</button>
+                    </div>
+                </form>
+            </div>
+       </div>
+   </div>
+   {% include 'base/footer.html' %}
+</body>
+</html>

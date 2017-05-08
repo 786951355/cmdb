@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+{% include 'base/header.html' %}
+
+<body data-type="widgets">
+
+   {% include 'base/body.html' %}
+    {% include 'base/menu.html' %}
+
+    <div class="tpl-content-wrapper">
+        <div class="widget am-fr">
+            <div class="widget-head am-cf">
+                <ol class="am-breadcrumb">
+                  <li><a href="{% url 'index' %}" class="am-icon-home">首页</a></li>
+                  <li><a href="{% url 'groups' %}">查看用户组</a></li>
+                  <li class="am-active">添加用户组</li>
+                </ol>
+            </div>
+            <div class="widget-body  am-fr">
+                <form class="am-form tpl-form-border-form tpl-form-border-br" method="post" action="{% url 'groupadd' %}">
+                    {% csrf_token %}
+                    <div class="widget-head am-fl">填写基本信息</div>
+                    <div id="hint" class="am-form-group"></div>
+                    <fieldset>
+                        {% for field in groupform %}
+                            <div class="am-form-group am-u-md-1 am-form-success">
+                                {{ field.label_tag }}
+                            </div>
+                            <div class="am-form-group am-u-md-11 am-form-success">
+                                {{ field }}
+                            </div>
+                        {% endfor %}
+                        <div class="am-form-group am-u-md-12 am-field-valid">用户列表 >>>></div>
+                        <div class="am-form-group am-u-md-12">
+                            {% for user in all_user %}
+                                <label class="am-checkbox-inline am-success">
+                                    <input name="selected_user_id" type="checkbox" value="{{ user.id }}">{{ user }}
+                                </label>
+                            {% endfor %}
+                        </div>
+                    </fieldset>
+                    <div class="am-form-group am-u-md-12 am-pagination-centered">
+                        {% for message in status %}
+                            <span style="color: #00a23f">{{ message.message }}</span>
+                        {% endfor %}
+                    </div>
+                    <div class="am-form-group am-u-md-12 am-pagination-centered">
+                        <a href="{% url 'groups' %}" id="cancle_button" role="button" class="am-btn am-btn-secondary">取消</a>
+                        <button type="submit" class="am-btn am-btn-success">提交</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    {% include 'base/footer.html' %}
+
+   <script>
+       $(function () {
+           $('#id_name').blur(function () {
+               var group_name = $(this).val();
+               $.get('/group/search',{name: group_name},
+                   function(result){
+                       if(result == 'unuse'){
+                           $('#hint').html('')
+                       }else {
+                            $('#hint').html('<font color="red">您输入的名字已存在！请重新输入！</font>')
+                       }
+                   })
+       })})
+   </script>
+</body>
+</html>

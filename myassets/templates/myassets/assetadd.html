@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+{% include 'base/header.html' %}
+
+<body data-type="widgets">
+
+   {% include 'base/body.html' %}
+    {% include 'base/menu.html' %}
+   <div class="tpl-content-wrapper">
+       <div class="widget am-fr">
+            <div class="widget-head am-cf">
+                <ol class="am-breadcrumb">
+                  <li><a href="{% url 'index' %}" class="am-icon-home">首页</a></li>
+                  <li><a href="{% url 'assets' %}">资产列表</a></li>
+                  <li class="am-active">编辑资产</li>
+                </ol>
+            </div>
+            <div class="widget-body  am-fr">
+                <form class="am-form tpl-form-border-form tpl-form-border-br" method="post" action="{% url 'assetsadd' %}">
+                    {% csrf_token %}
+                    <div class="widget-head am-fl">填写主机基本信息 &nbsp;<span><a href="{% url 'bulkadd' %}">  批量添加 </a></span></div>
+                    <div id="hint"></div>
+                    <fieldset>
+                        {% for field in assetform %}
+                            <div class="am-form-group am-u-md-1">
+                                {{ field.label_tag }}
+                            </div>
+                            <div class="am-form-group am-u-md-11">
+                                {{ field }}
+                            </div>
+                        {% endfor %}
+                    </fieldset>
+
+                    <div class="am-form-group am-pagination-centered">
+                        {% for message in status %}
+                            <span style="color: #00a23f">{{ message.message }}</span>
+                        {% endfor %}
+                    </div>
+                    <div class="am-form-group am-pagination-centered">
+                        <a href="{% url 'assets' %}" id="cancle_button" role="button" class="am-btn am-btn-secondary">取消</a>
+                        <button type="submit" class="am-btn am-btn-success">提交</button>
+                    </div>
+                </form>
+            </div>
+       </div>
+   </div>
+   {% include 'base/footer.html' %}
+
+{#   <script>#}
+{#       $(function () {#}
+{#           $('#id_email').blur(function () {#}
+{#               var email = $(this).val();#}
+{#               $.get('/assets/search',{email: email},#}
+{#                   function(result){#}
+{#                       if(result == 'unuse'){#}
+{#                           $('#hint').html('')#}
+{#                       }else {#}
+{#                            $('#hint').html('<font color="red">您输入的邮箱已存在！请重新输入！</font>')#}
+{#                       }#}
+{#                   })#}
+{#       })})#}
+{#   </script>#}
+</body>
+</html>

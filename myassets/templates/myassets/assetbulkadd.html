@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+{% include 'base/header.html' %}
+
+<body data-type="widgets">
+
+   {% include 'base/body.html' %}
+   {% include 'base/menu.html' %}
+
+   <div class="tpl-content-wrapper">
+       <div class="widget am-fr">
+            <div class="widget-head am-cf">
+                <ol class="am-breadcrumb">
+                  <li><a href="{% url 'index' %}" class="am-icon-home">首页</a></li>
+                  <li><a href="{% url 'assets' %}">查看资产</a></li>
+                  <li class="am-active">批量添加资产</li>
+                </ol>
+            </div>
+            <span class="widget-body  am-fr">
+                <form enctype="multipart/form-data" class="am-form tpl-form-border-form tpl-form-border-br" method="post" action="{% url 'bulkadd' %}">
+                    {% csrf_token %}
+                    <div class="widget-head am-fl">请下载Excel文件, 按照格式填写主机信息, 上传导入.<a href="{% static 'excel/asset.xlsx' %}">  下载模板文件</a></div>
+
+                    <fieldset>
+                        {% for field in uploadform %}
+                            <div class="am-form-group am-u-md-1">
+                                {{ field.label_tag }}
+                            </div>
+                            <div class="am-form-group am-u-md-11">
+                                {{ field }}
+                            </div>
+                        {% endfor %}
+                    </fieldset>
+
+                    <div class="am-form-group am-pagination-centered">
+                        {% for message in status %}
+                            <span style="color: #00a23f">{{ message.message }}</span>
+                        {% endfor %}
+                    </div>
+                    <div class="am-form-group am-pagination-centered">
+                        <a href="{% url 'assets' %}" id="cancle_button" role="button" class="am-btn am-btn-secondary">取消</a>
+                        <button type="submit" class="am-btn am-btn-success">提交</button>
+                    </div>
+                </form>
+            </div>
+       </div>
+   </div>
+   {% include 'base/footer.html' %}
+</body>
+</html>

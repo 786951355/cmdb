@@ -1,0 +1,79 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8"/>
+<title>限定复选框的可选个数-蚂蚁部落</title>
+<script>
+function checboxNum(name, num) {
+  var checboxs = document.getElementsByName(name);
+  var a = 0;
+  for (var index = 0; index < checboxs.length; index++) {
+    if (checboxs[index].checked) {
+      a = a + 1;
+    }
+  }
+  if (a == num) {
+    for (var index = 0; index < checboxs.length; index++) {
+      if (!checboxs[index].checked) {
+        checboxs[index].disabled = 'disabled';
+      }
+    }
+  } else {
+    for (var index = 0; index < checboxs.length; index++)
+      checboxs[index].removeAttribute('disabled');
+  }
+}
+window.onload = function() {
+  var box = document.getElementById("box");
+  box.onclick = function() {
+    checboxNum("ck", 6);
+  }
+}
+</script>
+</head>
+<body >
+<div id="box">
+<label for="one"><input id="one" type="checkbox" name="ck"/>蚂蚁部落一</label>
+<label><input type="checkbox" name="ck"/></label>蚂蚁部落二
+<label><input type="checkbox" name="ck"/></label>蚂蚁部落三
+<label><input type="checkbox" name="ck"/></label>蚂蚁部落四
+<label><input type="checkbox" name="ck"/></label>蚂蚁部落五
+<p></p>
+<label><input type="checkbox" name="ck"/></label>蚂蚁部落六
+<label><input type="checkbox" name="ck"/></label>蚂蚁部落七
+<label><input type="checkbox" name="ck"/></label>蚂蚁部落八
+<label><input type="checkbox" name="ck"/></label>蚂蚁部落九
+<label><input type="checkbox" name="ck"/></label>蚂蚁部落十
+</div>
+
+
+		<p>你喜欢哪个城市?</p>
+		<ul id="city"><li id="bj" name="BeiJing">北京<a href="#">点我</a>hello</li>
+			<li>上海</li>
+			<li>东京</li>
+			<li>首尔</li>
+		</ul>
+
+		<br><br>
+		<p>你喜欢哪款单机游戏?</p>
+		<ul id="game">
+			<li id="rl">红警</li>
+			<li>实况</li>
+			<li>极品飞车</li>
+			<li>魔兽</li>
+		</ul>
+
+		<br><br>
+		name: <input type="text" name="username"
+			id="name" value="atguigu"/>
+
+<script>
+    var bjnode = document.getElementById('bj');
+    var bjTextnode = bjnode.firstChild;
+    alert(bjTextnode.nodeValue);
+    alert('--------------')
+    var bjtextnode2 = bjnode.lastChild;
+    alert(bjtextnode2.nodeValue);
+</script>
+</body>
+</html>
