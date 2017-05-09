@@ -150,9 +150,9 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 EMAIL_USE_TLS = False
 EMAIL_HOST = 'smtp.qq.com'
 EMAIL_PORT = 25
-EMAIL_HOST_USER = 'chenkui@trinitigames.cn'
-EMAIL_HOST_PASSWORD = '123.com123.COM'
-DEFAULT_FROM_EMAIL = 'chenkui@trinitigames.cn'
+EMAIL_HOST_USER = 'your email address'
+EMAIL_HOST_PASSWORD = 'passwd'
+DEFAULT_FROM_EMAIL = 'default sender'
 
 # pagination setting
 EL_PAGINATION_PREVIOUS_LABEL = '上一页'
