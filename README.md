@@ -11,4 +11,5 @@
 # 资产
 ![image](https://github.com/786951355/cmdb/raw/master/asset.png)
 
+![image](https://github.com/786951355/cmdb/blob/master/asset.png)
 
